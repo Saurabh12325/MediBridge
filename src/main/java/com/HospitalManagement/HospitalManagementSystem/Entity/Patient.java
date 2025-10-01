@@ -16,19 +16,19 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(nullable = false,length = 40)
     private String name;
 
-    @ToString.Exclude
+
     private LocalDate birthDate;
     private String gender;
-    @Column(unique = true)
+    @Column(unique = true,nullable = false)
     private String email;
     @Enumerated(EnumType.STRING)
     private BloodGroupType bloodGroupType;
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(updatable = false,nullable = false)
     private LocalDateTime createdAt;
-
-
+   @OneToOne
+    private Insurance insurance;
 }

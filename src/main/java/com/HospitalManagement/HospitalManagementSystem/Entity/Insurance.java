@@ -1,13 +1,28 @@
 package com.HospitalManagement.HospitalManagementSystem.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+@Data
+@NoArgsConstructor
 @Entity
 @AllArgsConstructor
 public class Insurance {
     @Id
-    @GeneratedValue()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(nullable = false,unique = true,length = 50)
+    private String policyNumber;
+    @Column(nullable = false,length = 100)
+    private String provider;
+    @Column(nullable = false)
+    private LocalDate validUntil;
+    @CreationTimestamp
+    @Column(nullable = false,updatable = false)
+    private LocalDateTime createdAt;
 }
