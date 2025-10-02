@@ -1,9 +1,11 @@
 package com.HospitalManagement.HospitalManagementSystem.Entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.engine.internal.Cascade;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,7 +15,7 @@ import java.util.List;
 @Data
 @ToString
 @Table(name = "patient_tbl")
-public class Patient {
+ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,10 +33,13 @@ public class Patient {
     @Column(updatable = false,nullable = false)
     private LocalDateTime createdAt;
 
-   @OneToOne
+@ToString.Exclude
+   @OneToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
    @JoinColumn(name = "Patient_Insurance_id") //this is owning side
     private Insurance insurance;
 
    @OneToMany(mappedBy = "patient")
+   @ToString.Exclude
    private List<Appointment> appointments;
+
 }

@@ -1,10 +1,7 @@
 package com.HospitalManagement.HospitalManagementSystem.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
@@ -27,6 +24,8 @@ public class Insurance {
     @CreationTimestamp
     @Column(nullable = false,updatable = false)
     private LocalDateTime createdAt;
+
+    @ToString.Exclude
     @OneToOne(mappedBy = "insurance")
     private Patient patient;
 }
