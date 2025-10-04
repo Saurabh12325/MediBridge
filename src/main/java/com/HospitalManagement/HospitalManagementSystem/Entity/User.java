@@ -1,6 +1,4 @@
 package com.HospitalManagement.HospitalManagementSystem.Entity;
-
-
 import com.HospitalManagement.HospitalManagementSystem.Entity.Type.AuthProviderType;
 import com.HospitalManagement.HospitalManagementSystem.Entity.Type.RoleType;
 import jakarta.persistence.*;
@@ -8,7 +6,6 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;

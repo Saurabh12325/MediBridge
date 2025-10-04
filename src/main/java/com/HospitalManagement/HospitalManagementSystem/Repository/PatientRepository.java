@@ -23,7 +23,7 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     List<Patient> findByNameContainingOrderByIdDesc(String query);
 
-    @Query("SELECT p FROM Patient p where p.bloodGroup = ?1")
+    @Query("SELECT p FROM Patient p where p.bloodGroupType = ?1")
     List<Patient> findByBloodGroup(@Param("bloodGroup") BloodGroupType bloodGroup);
 
     @Query("select p from Patient p where p.birthDate > :birthDate")
@@ -34,7 +34,7 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 //    List<Object[]> countEachBloodGroupType();
     List<BloodGroupCountResponseEntity> countEachBloodGroupType();
 
-    @Query(value = "select * from patient", nativeQuery = true)
+    @Query(value = "select * from Patient", nativeQuery = true)
     Page<Patient> findAllPatients(Pageable pageable);
 
     @Transactional

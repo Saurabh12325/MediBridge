@@ -1,5 +1,10 @@
 package com.HospitalManagement.HospitalManagementSystem.Controller;
 
+import com.HospitalManagement.HospitalManagementSystem.Service.DoctorService;
+import com.HospitalManagement.HospitalManagementSystem.Service.PatientService;
+import com.HospitalManagement.HospitalManagementSystem.dto.DoctorResponseDto;
+import com.HospitalManagement.HospitalManagementSystem.dto.OnBoardDoctorRequestDto;
+import com.HospitalManagement.HospitalManagementSystem.dto.PatientResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +29,7 @@ public class AdminController {
     }
 
     @PostMapping("/onBoardNewDoctor")
-    public ResponseEntity<DoctorResponseDto> onBoardNewDoctor(@RequestBody OnboardDoctorRequestDto onboardDoctorRequestDto) {
+    public ResponseEntity<DoctorResponseDto> onBoardNewDoctor(@RequestBody OnBoardDoctorRequestDto onboardDoctorRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(doctorService.onBoardNewDoctor(onboardDoctorRequestDto));
     }
 }

@@ -1,6 +1,7 @@
 package com.HospitalManagement.HospitalManagementSystem.dto;
 
 
+import com.HospitalManagement.HospitalManagementSystem.Entity.Type.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

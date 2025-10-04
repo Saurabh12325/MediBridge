@@ -30,17 +30,17 @@ import java.util.List;
     private String email;
     @Enumerated(EnumType.STRING)
     private BloodGroupType bloodGroupType;
+
     @CreationTimestamp
     @Column(updatable = false,nullable = false)
     private LocalDateTime createdAt;
 
-@ToString.Exclude
-   @OneToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+
+   @OneToOne(cascade = {CascadeType.ALL} ,orphanRemoval = true)
    @JoinColumn(name = "Patient_Insurance_id") //this is owning side
     private Insurance insurance;
 
    @OneToMany(mappedBy = "patient")
-   @ToString.Exclude
    private List<Appointment> appointments = new ArrayList<>();
 
 }

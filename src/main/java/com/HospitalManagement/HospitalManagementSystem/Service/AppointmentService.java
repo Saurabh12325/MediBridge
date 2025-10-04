@@ -1,4 +1,4 @@
-
+package com.HospitalManagement.HospitalManagementSystem.Service;
 import com.HospitalManagement.HospitalManagementSystem.Entity.Appointment;
 import com.HospitalManagement.HospitalManagementSystem.Entity.Doctor;
 import com.HospitalManagement.HospitalManagementSystem.Entity.Patient;

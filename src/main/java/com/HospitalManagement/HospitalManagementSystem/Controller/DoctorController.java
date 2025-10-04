@@ -1,5 +1,8 @@
 package com.HospitalManagement.HospitalManagementSystem.Controller;
 
+import com.HospitalManagement.HospitalManagementSystem.Entity.User;
+import com.HospitalManagement.HospitalManagementSystem.Service.AppointmentService;
+import com.HospitalManagement.HospitalManagementSystem.dto.AppointmentResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
