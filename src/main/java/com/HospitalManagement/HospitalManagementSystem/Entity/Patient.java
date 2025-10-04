@@ -9,6 +9,7 @@ import org.hibernate.engine.internal.Cascade;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -40,6 +41,6 @@ import java.util.List;
 
    @OneToMany(mappedBy = "patient")
    @ToString.Exclude
-   private List<Appointment> appointments;
+   private List<Appointment> appointments = new ArrayList<>();
 
 }
