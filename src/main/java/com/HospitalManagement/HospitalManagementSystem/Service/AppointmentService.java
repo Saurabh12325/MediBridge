@@ -29,7 +29,7 @@ public class AppointmentService {
         appointment.setDoctor(doctor);
         appointment.setPatient(patient);
         patient.getAppointments().add(appointment); 
-        appointmentRepository.save(appointment);
+       return appointmentRepository.save(appointment);
 
     }
 
