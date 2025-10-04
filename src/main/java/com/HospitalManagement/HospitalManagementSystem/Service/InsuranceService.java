@@ -4,21 +4,41 @@ import com.HospitalManagement.HospitalManagementSystem.Entity.Insurance;
 import com.HospitalManagement.HospitalManagementSystem.Entity.Patient;
 import com.HospitalManagement.HospitalManagementSystem.Repository.InsuranceRepository;
 import com.HospitalManagement.HospitalManagementSystem.Repository.PatientRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @RequiredArgsConstructor
 public class InsuranceService {
 
-    private final PatientRepository patientRepository;
     private final InsuranceRepository insuranceRepository;
+    private final PatientRepository patientRepository;
+
     @Transactional
-    public Patient assignInsurancetoPatient(Insurance insurance, Long Patientid){
-        Patient patient = patientRepository.findById(Patientid).orElseThrow(() -> new RuntimeException("Patient not found"));
+    public Patient assignInsuranceToPatient(Insurance insurance, Long patientId) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new EntityNotFoundException("Patient not found with id: " + patientId));
+
         patient.setInsurance(insurance);
-        insurance.setPatient(patient);
+        insurance.setPatient(patient); // bidirectional consistency maintainence
+
         return patient;
     }
+
+    @Transactional
+    public Patient disaccociateInsuranceFromPatient(Long patientId) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new EntityNotFoundException("Patient not found with id: " + patientId));
+
+        patient.setInsurance(null);
+        return patient;
+    }
+
+    // HW
+    //Create three appointment for a patient and then delete Patient
+
+
 }
