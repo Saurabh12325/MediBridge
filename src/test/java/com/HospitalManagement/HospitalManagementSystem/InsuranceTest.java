@@ -2,6 +2,7 @@ package com.HospitalManagement.HospitalManagementSystem;
 
 import com.HospitalManagement.HospitalManagementSystem.Entity.Insurance;
 import com.HospitalManagement.HospitalManagementSystem.Entity.Patient;
+import com.HospitalManagement.HospitalManagementSystem.Service.AppointmentService;
 import com.HospitalManagement.HospitalManagementSystem.Service.InsuranceService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ public class InsuranceTest {
 
     @Autowired
     private InsuranceService insuranceService;
+
+    @Autowired
+    private AppointmentService appointmentService;
     @Test
     public void testInsurance(){
         Insurance insurance = Insurance.builder()
@@ -24,4 +28,7 @@ public class InsuranceTest {
        Patient patient =  insuranceService.assignInsurancetoPatient(insurance,1L);
        System.out.println(patient);
     }
+
+    @Test
+    p
 }
