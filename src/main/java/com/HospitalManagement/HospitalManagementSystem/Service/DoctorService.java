@@ -36,7 +36,7 @@ public class DoctorService {
 
     @Transactional
     public DoctorResponseDto onBoardNewDoctor(OnBoardDoctorRequestDto onBoardDoctorRequestDto) {
-        User user = userRepository.findById(onBoardDoctorRequestDto.getUserId()).orElseThrow("User not found");
+        User user = userRepository.findById(onBoardDoctorRequestDto.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         if(doctorRepository.existsById(onBoardDoctorRequestDto.getUserId())) {
             throw new IllegalArgumentException("Already a doctor");
@@ -45,7 +45,7 @@ public class DoctorService {
         Doctor doctor = Doctor.builder()
                 .name(onBoardDoctorRequestDto.getName())
                 .Specialization(onBoardDoctorRequestDto.getSpecialization())
-                .User(user)
+                .user(user)
                 .build();
 
         user.getRoles().add(RoleType.DOCTOR);

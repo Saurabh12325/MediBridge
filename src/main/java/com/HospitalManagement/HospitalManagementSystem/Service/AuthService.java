@@ -10,5 +10,6 @@ public class AuthService {
     }
 
     public SignUpResponseDto signup(SignUpRequestDto signupRequestDto) {
+        return null;
     }
 }
