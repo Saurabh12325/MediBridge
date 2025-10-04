@@ -1,5 +1,4 @@
 package com.HospitalManagement.HospitalManagementSystem.Service;
-
 import com.HospitalManagement.HospitalManagementSystem.Entity.Insurance;
 import com.HospitalManagement.HospitalManagementSystem.Entity.Patient;
 import com.HospitalManagement.HospitalManagementSystem.Repository.InsuranceRepository;
