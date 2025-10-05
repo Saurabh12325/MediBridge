@@ -1,6 +1,7 @@
 package com.HospitalManagement.HospitalManagementSystem.Service;
 
 import com.HospitalManagement.HospitalManagementSystem.Entity.User;
+import com.HospitalManagement.HospitalManagementSystem.Repository.UserRepository;
 import com.HospitalManagement.HospitalManagementSystem.Security.JwtUtil;
 import com.HospitalManagement.HospitalManagementSystem.dto.LoginRequestDto;
 import com.HospitalManagement.HospitalManagementSystem.dto.LoginResponseDto;
@@ -19,6 +20,7 @@ public class AuthService {
 
     private final AuthenticationManager  authenticationManager;
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         Authentication authentication = authenticationManager.authenticate(
@@ -33,6 +35,15 @@ public class AuthService {
     }
 
     public SignUpResponseDto signup(SignUpRequestDto signupRequestDto) {
-        return null;
+        User user = userRepository.findByUsername(signupRequestDto.getUsername()).orElse(null);
+        if(user != null){
+            throw new IllegalArgumentException("User already exists");
+        }
+        user = userRepository.save(User.builder()
+                .username(signupRequestDto.getUsername())
+                .password(signupRequestDto.getPassword())
+                .build());
+
+        return new SignUpResponseDto(user.getId(), user.getUsername());
     }
 }
