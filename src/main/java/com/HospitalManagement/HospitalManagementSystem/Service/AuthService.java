@@ -1,5 +1,7 @@
 package com.HospitalManagement.HospitalManagementSystem.Service;
 
+import com.HospitalManagement.HospitalManagementSystem.Entity.User;
+import com.HospitalManagement.HospitalManagementSystem.Security.JwtUtil;
 import com.HospitalManagement.HospitalManagementSystem.dto.LoginRequestDto;
 import com.HospitalManagement.HospitalManagementSystem.dto.LoginResponseDto;
 import com.HospitalManagement.HospitalManagementSystem.dto.SignUpRequestDto;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final AuthenticationManager  authenticationManager;
+    private final JwtUtil jwtUtil;
+
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -23,6 +27,9 @@ public class AuthService {
                         loginRequestDto.getPassword()
                 )
         );
+        User user = (User) authentication.getPrincipal();
+        String accessToken = jwtUtil.generateAccessToken(user);
+        return new LoginResponseDto(accessToken, user.getId());
     }
 
     public SignUpResponseDto signup(SignUpRequestDto signupRequestDto) {
