@@ -3,9 +3,9 @@ package com.HospitalManagement.HospitalManagementSystem.Service;
 
 import com.HospitalManagement.HospitalManagementSystem.Entity.Doctor;
 import com.HospitalManagement.HospitalManagementSystem.Entity.Type.RoleType;
-import com.HospitalManagement.HospitalManagementSystem.Entity.User;
+//import com.HospitalManagement.HospitalManagementSystem.Entity.User;
 import com.HospitalManagement.HospitalManagementSystem.Repository.DoctorRepository;
-import com.HospitalManagement.HospitalManagementSystem.Repository.UserRepository;
+//import com.HospitalManagement.HospitalManagementSystem.Repository.UserRepository;
 import com.HospitalManagement.HospitalManagementSystem.dto.DoctorResponseDto;
 import com.HospitalManagement.HospitalManagementSystem.dto.OnBoardDoctorRequestDto;
 import jakarta.transaction.Transactional;
@@ -24,7 +24,7 @@ public class DoctorService {
 
     private final DoctorRepository doctorRepository;
     private final ModelMapper modelMapper;
-    private final UserRepository userRepository;
+//    private final UserRepository userRepository;
 
     public List<DoctorResponseDto> getAllDoctors() {
         return doctorRepository.findAll()
@@ -36,7 +36,7 @@ public class DoctorService {
 
     @Transactional
     public DoctorResponseDto onBoardNewDoctor(OnBoardDoctorRequestDto onBoardDoctorRequestDto) {
-        User user = userRepository.findById(onBoardDoctorRequestDto.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
+//        User user = userRepository.findById(onBoardDoctorRequestDto.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         if(doctorRepository.existsById(onBoardDoctorRequestDto.getUserId())) {
             throw new IllegalArgumentException("Already a doctor");
@@ -45,10 +45,10 @@ public class DoctorService {
         Doctor doctor = Doctor.builder()
                 .name(onBoardDoctorRequestDto.getName())
                 .Specialization(onBoardDoctorRequestDto.getSpecialization())
-                .user(user)
+//                .user(user)
                 .build();
 
-        user.getRoles().add(RoleType.DOCTOR);
+//        user.getRoles().add(RoleType.DOCTOR);
 
         return modelMapper.map(doctorRepository.save(doctor), DoctorResponseDto.class);
     }

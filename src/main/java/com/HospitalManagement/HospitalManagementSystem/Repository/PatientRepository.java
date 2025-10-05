@@ -28,20 +28,18 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     @Query("select p from Patient p where p.birthDate > :birthDate")
     List<Patient> findByBornAfterDate(@Param("birthDate") LocalDate birthDate);
-
     @Query("select new com.HospitalManagement.HospitalManagementSystem.dto.BloodGroupCountResponseEntity(p.bloodGroupType," +
             " Count(p)) from Patient p group by p.bloodGroupType")
 //    List<Object[]> countEachBloodGroupType();
     List<BloodGroupCountResponseEntity> countEachBloodGroupType();
 
-    @Query(value = "select * from Patient", nativeQuery = true)
+    @Query("SELECT p FROM Patient p")
     Page<Patient> findAllPatients(Pageable pageable);
 
     @Transactional
     @Modifying
     @Query("UPDATE Patient p SET p.name = :name where p.id = :id")
     int updateNameWithId(@Param("name") String name, @Param("id") Long id);
-
 
     //    @Query("SELECT p FROM Patient p LEFT JOIN FETCH p.appointments a LEFT JOIN FETCH a.doctor")
     @Query("SELECT p FROM Patient p LEFT JOIN FETCH p.appointments")
