@@ -1,4 +1,4 @@
-package com.HospitalManagement.HospitalManagementSystem.Confg;
+package com.HospitalManagement.HospitalManagementSystem.Security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
 @RequiredArgsConstructor
@@ -34,18 +33,5 @@ public class WebSecurityConfig{
 
         }
 
-        @Bean
-        UserDetailsService userDetailsService(){
-        UserDetails user1 = User.withUsername("admin")
-                .password(passwordEncoder.encode("pass"))
-                .roles("ADMIN")
-                .build();
 
-            UserDetails user2 = User.withUsername("patient")
-                    .password(passwordEncoder.encode("pass"))
-                    .roles("PATIENT")
-                    .build();
-
-            return new InMemoryUserDetailsManager(user1,user2);
-        }
 }
