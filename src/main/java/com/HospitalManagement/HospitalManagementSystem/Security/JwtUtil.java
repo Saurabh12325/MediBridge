@@ -2,6 +2,7 @@ package com.HospitalManagement.HospitalManagementSystem.Security;
 
 
 import com.HospitalManagement.HospitalManagementSystem.Entity.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,4 +34,13 @@ public class JwtUtil {
               .signWith(getSecretKey())
               .compact();
   }
+
+    public String extractUsername(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claims.getSubject();
+    }
 }

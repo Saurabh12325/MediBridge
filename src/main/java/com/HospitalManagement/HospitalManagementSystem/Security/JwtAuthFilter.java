@@ -15,15 +15,18 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthFilter extends OncePerRequestFilter  {
+    private final JwtUtil jwtUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("incoming request" + request.getRequestURI());
 
-        final  String getAuthorizationHeader = request.getHeader("Authorization");
-        if(getAuthorizationHeader == null && !getAuthorizationHeader.startsWith("Bearer")) {
+        final  String requestTokenHeader = request.getHeader("Authorization");
+        if( requestTokenHeader  == null || !requestTokenHeader.startsWith("Bearer")) {
             filterChain.doFilter(request, response);
             return;
         }
+        String token = requestTokenHeader.split("Bearer")[1];
+        String username = jwtUtil.extractUsername(token);
     }
 }
