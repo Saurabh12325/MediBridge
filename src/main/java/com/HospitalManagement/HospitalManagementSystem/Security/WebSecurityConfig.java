@@ -36,14 +36,14 @@ public class WebSecurityConfig{
                                 .requestMatchers("/public/**","/auth/**").permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-                 .oauth2Login(oauth2 -> oauth2.failureHandler(
-                         new AuthenticationFailureHandler() {
-                             @Override
-                             public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                                 log.error("aAuthError : {}", exception.getMessage());
-                             }
-                         }
-                 ));
+                 .oauth2Login(oauth2 -> oauth2
+                         .failureHandler( (request, response, exception) ->
+                                 log.error("aAuthError : {}", exception.getMessage())
+                 )
+                 .successHandler((request, response, authentication) -> {
+                     log.info("OAuth2 login successful");
+                 })
+                 );
         ;
 
         return http.build();
