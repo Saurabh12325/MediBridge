@@ -1,5 +1,6 @@
 package com.HospitalManagement.HospitalManagementSystem.Service;
 
+import com.HospitalManagement.HospitalManagementSystem.Entity.Type.AuthProviderType;
 import com.HospitalManagement.HospitalManagementSystem.Entity.User;
 import com.HospitalManagement.HospitalManagementSystem.Repository.UserRepository;
 import com.HospitalManagement.HospitalManagementSystem.Security.JwtUtil;
@@ -56,4 +57,15 @@ public class AuthService {
 //        and if the user have an account:directly login
 //                otherwise create an account and then login
     }
+
+    public AuthProviderType getAuthProviderType(String registrationId){
+        return switch (registrationId.toLowerCase()){
+            case "google" ->AuthProviderType.GOOGLE;
+            case "github" ->AuthProviderType.GITHUB;
+            case "facebook" ->AuthProviderType.FACEBOOK;
+            case "twitter" ->AuthProviderType.TWITTER;
+            default -> throw  new IllegalArgumentException("Invalid registration id");
+        };
+    }
 }
+
