@@ -21,42 +21,43 @@ public class JwtUtil {
       @Value("${jwt.secret}")
       private String jwtSecretKey;
 
-
-//payload
-  public String generateAccessToken(User user){
-      return Jwts.builder()
-              .setSubject(user.getUsername())
-              .claim("userId",user.getId().toString())
-              .setIssuedAt(new Date())
-              .setExpiration(new Date(System.currentTimeMillis()+1000*60*10))
-              .signWith(SignatureAlgorithm.HS256,jwtSecretKey)
-              .compact();
-  }
-
-    public String extractUsername(String token) {
-
-       return Jwts.parser()
-                .setSigningKey(jwtSecretKey)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-
-
+      private SecretKey getSecretKey() {
+        return Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public boolean validateToken(String token){
 
-        try{
+//payload
+
+    public String generateAccessToken(User user) {
+        return Jwts.builder()
+                .subject(user.getUsername())
+                .claim("userId", user.getId().toString())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000*60*10))
+                .signWith(getSecretKey())
+                .compact();
+    }
+
+    public String extractUsername(String token) {
+        Claims claims =  Jwts.parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claims.getSubject();
+    }
+
+    public boolean validateToken(String token) {
+        try {
             Jwts.parser()
-                    .setSigningKey(jwtSecretKey)
-                    .parseClaimsJws(token);
+                    .verifyWith(getSecretKey())
+                    .build()
+                    .parseSignedClaims(token);
             return true;
         } catch (Exception e) {
             return false;
         }
-
     }
-
 
 
 
