@@ -55,9 +55,11 @@ public class AuthService {
     }
 
     public ResponseEntity<LoginResponseDto> handleOAuth2LoginSucess(OAuth2User oAuth2User, String registrationId) {
+
 //     first get the providerID and the ProviderType and then save the providerType and providerId in the user table
         AuthProviderType authProviderType = getAuthProviderType(registrationId);
-
+        String providerId = getProviderIdFromOAuthUser(oAuth2User,registrationId);
+        User user = userRepository.findByAuthProviderTypeAndProviderId(authProviderType,providerId).orElse(null);
 
 
 //        and if the user have an account:directly login
