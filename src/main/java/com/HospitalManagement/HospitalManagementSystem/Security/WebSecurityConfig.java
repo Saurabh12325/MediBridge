@@ -1,5 +1,6 @@
 package com.HospitalManagement.HospitalManagementSystem.Security;
 
+import com.HospitalManagement.HospitalManagementSystem.OAuth.OAuth2SuccessHandler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,6 +27,7 @@ import java.io.IOException;
 public class WebSecurityConfig{
 
     private final JwtAuthFilter authFilter;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http ) throws Exception {
@@ -40,9 +42,8 @@ public class WebSecurityConfig{
                          .failureHandler( (request, response, exception) ->
                                  log.error("aAuthError : {}", exception.getMessage())
                  )
-                 .successHandler((request, response, authentication) -> {
-                     log.info("OAuth2 login successful");
-                 })
+                 .successHandler(oAuth2SuccessHandler)
+
                  );
         ;
 

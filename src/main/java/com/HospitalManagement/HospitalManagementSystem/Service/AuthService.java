@@ -8,10 +8,12 @@ import com.HospitalManagement.HospitalManagementSystem.dto.LoginResponseDto;
 import com.HospitalManagement.HospitalManagementSystem.dto.SignUpRequestDto;
 import com.HospitalManagement.HospitalManagementSystem.dto.SignUpResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 
@@ -47,5 +49,9 @@ public class AuthService {
                 .build());
 
         return new SignUpResponseDto(user.getId(), user.getUsername());
+    }
+
+    public ResponseEntity<LoginResponseDto> handleOAuth2LoginSucess(OAuth2User oAuth2User, String registrationId) {
+//     first get the providerID and the ProviderType
     }
 }
