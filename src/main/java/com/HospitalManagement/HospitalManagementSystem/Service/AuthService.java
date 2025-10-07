@@ -9,6 +9,7 @@ import com.HospitalManagement.HospitalManagementSystem.dto.LoginResponseDto;
 import com.HospitalManagement.HospitalManagementSystem.dto.SignUpRequestDto;
 import com.HospitalManagement.HospitalManagementSystem.dto.SignUpResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +19,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -54,6 +56,10 @@ public class AuthService {
 
     public ResponseEntity<LoginResponseDto> handleOAuth2LoginSucess(OAuth2User oAuth2User, String registrationId) {
 //     first get the providerID and the ProviderType and then save the providerType and providerId in the user table
+        AuthProviderType authProviderType = getAuthProviderType(registrationId);
+
+
+
 //        and if the user have an account:directly login
 //                otherwise create an account and then login
     }
@@ -66,6 +72,23 @@ public class AuthService {
             case "twitter" ->AuthProviderType.TWITTER;
             default -> throw  new IllegalArgumentException("Invalid registration id");
         };
+    }
+
+    public String getProviderIdFromOAuthUser(OAuth2User oAuth2User,String registrationId){
+        String providerId = switch (registrationId.toLowerCase()){
+            case "google" ->oAuth2User.getAttribute("sub");
+            case "github" ->oAuth2User.getAttribute("id");
+            default -> {
+                log.error("Unsupported oAuth2 provider:{}",registrationId);
+                throw new IllegalArgumentException("Invalid registration id");
+            }
+
+        };
+        if(providerId==null || providerId.isBlank()){
+            log.error("Unable to determine providerId for provider:{}",registrationId);
+            throw new IllegalArgumentException("Unable to determine providerId for OAuth2 Login");
+        }
+        return providerId;
     }
 }
 
