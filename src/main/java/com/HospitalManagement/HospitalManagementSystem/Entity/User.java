@@ -29,6 +29,8 @@ public class User implements UserDetails {
     @JoinColumn(unique = true, nullable = false)
     private String username;
     private String password;
+    private String providerId;
+    private AuthProviderType providerType;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

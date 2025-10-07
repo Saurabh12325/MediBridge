@@ -52,6 +52,8 @@ public class AuthService {
     }
 
     public ResponseEntity<LoginResponseDto> handleOAuth2LoginSucess(OAuth2User oAuth2User, String registrationId) {
-//     first get the providerID and the ProviderType
+//     first get the providerID and the ProviderType and then save the providerType and providerId in the user table
+//        and if the user have an account:directly login
+//                otherwise create an account and then login
     }
 }
