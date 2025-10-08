@@ -60,6 +60,8 @@ public class AuthService {
         AuthProviderType authProviderType = getAuthProviderType(registrationId);
         String providerId = getProviderIdFromOAuthUser(oAuth2User,registrationId);
         User user = userRepository.findByAuthProviderTypeAndProviderId(authProviderType,providerId).orElse(null);
+        String email = oAuth2User.getAttribute("email");
+        User emailUser = userRepository.findByUsername(email).orElse(null);
 
 
 //        and if the user have an account:directly login
@@ -91,6 +93,13 @@ public class AuthService {
             throw new IllegalArgumentException("Unable to determine providerId for OAuth2 Login");
         }
         return providerId;
+    }
+
+    public String determineUsernamefromOAuthUser(OAuth2User oAuth2User,String registrationId,String providerId){
+        String email = oAuth2User.getAttribute("email");
+       if(email !=null && !email.isBlank()){
+           return email;
+       }
     }
 }
 
