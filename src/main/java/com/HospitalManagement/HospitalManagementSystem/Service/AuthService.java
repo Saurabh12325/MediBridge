@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -67,6 +68,16 @@ public class AuthService {
         if(user == null && emailUser == null){ //agar user nahi hai toh create karega
             String username = determineUserNameFromOAuthUser(oAuth2User,registrationId,providerId);
            SignUpResponseDto signUpResponseDto = signup(new SignUpRequestDto(username,null));
+
+        } else if (user != null) {
+            if ((email !=null && !email.isBlank() && !email.equals(user.getUsername()))){
+                user.setUsername(email);
+                userRepository.save(user);
+            }
+
+        }
+        else {
+            throw new BadCredentialsException("This email already registered with provider " + email);
         }
 //        and if the user have an account:directly login
 //                otherwise create an account and then login
