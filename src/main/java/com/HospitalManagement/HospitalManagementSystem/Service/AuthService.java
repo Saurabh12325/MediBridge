@@ -60,10 +60,14 @@ public class AuthService {
         AuthProviderType authProviderType = getAuthProviderType(registrationId);
         String providerId = getProviderIdFromOAuthUser(oAuth2User,registrationId);
         User user = userRepository.findByAuthProviderTypeAndProviderId(authProviderType,providerId).orElse(null);
+
         String email = oAuth2User.getAttribute("email");
         User emailUser = userRepository.findByUsername(email).orElse(null);
 
-
+        if(user == null && emailUser == null){ //agar user nahi hai toh create karega
+            String username = determineUserNameFromOAuthUser(oAuth2User,registrationId,providerId);
+           SignUpResponseDto signUpResponseDto = signup(new SignUpRequestDto(username,null));
+        }
 //        and if the user have an account:directly login
 //                otherwise create an account and then login
     }
@@ -95,11 +99,16 @@ public class AuthService {
         return providerId;
     }
 
-    public String determineUsernamefromOAuthUser(OAuth2User oAuth2User,String registrationId,String providerId){
+    public String determineUserNameFromOAuthUser(OAuth2User oAuth2User,String registrationId,String providerId){
         String email = oAuth2User.getAttribute("email");
        if(email !=null && !email.isBlank()){
            return email;
        }
+       return switch (registrationId.toLowerCase()) {
+           case "google" ->oAuth2User.getAttribute("sub");
+           case  "github" ->oAuth2User.getAttribute("login");
+           default -> providerId;
+       };
     }
 }
 
