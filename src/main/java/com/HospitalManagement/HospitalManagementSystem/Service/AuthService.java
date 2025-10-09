@@ -8,7 +8,9 @@ import com.HospitalManagement.HospitalManagementSystem.dto.LoginRequestDto;
 import com.HospitalManagement.HospitalManagementSystem.dto.LoginResponseDto;
 import com.HospitalManagement.HospitalManagementSystem.dto.SignUpRequestDto;
 import com.HospitalManagement.HospitalManagementSystem.dto.SignUpResponseDto;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,38 +43,43 @@ public class AuthService {
         String accessToken = jwtUtil.generateAccessToken(user);
         return new LoginResponseDto(accessToken, user.getId());
     }
-    public User signUpInternal(SignUpRequestDto signUpRequestDto){
+
+    public User signUpInternal(SignUpRequestDto signUpRequestDto,AuthProviderType authProviderType ,String providerId){
         User user = userRepository.findByUsername(signUpRequestDto.getUsername()).orElse(null);
         if(user != null){
             throw new IllegalArgumentException("User already exists");
         }
         user = userRepository.save(User.builder()
                 .username(signUpRequestDto.getUsername())
-                .password(passwordEncoder.encode(signUpRequestDto.getPassword()))
+                .providerType(authProviderType)
+                .providerId(providerId)
+//                )
                 .build());
+        if(authProviderType==AuthProviderType.EMAIL){
+            user.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
+        }
         return user;
     }
     public SignUpResponseDto signup(SignUpRequestDto signupRequestDto) {
-
-        User user = signUpInternal(signupRequestDto);
+        User user = signUpInternal(signupRequestDto,AuthProviderType.EMAIL,null);
         return new SignUpResponseDto(user.getId(), user.getUsername());
     }
 
 
-
+@Transactional
     public ResponseEntity<LoginResponseDto> handleOAuth2LoginSucess(OAuth2User oAuth2User, String registrationId) {
 
 //     first get the providerID and the ProviderType and then save the providerType and providerId in the user table
         AuthProviderType authProviderType = getAuthProviderType(registrationId);
         String providerId = getProviderIdFromOAuthUser(oAuth2User,registrationId);
-        User user = userRepository.findByAuthProviderTypeAndProviderId(authProviderType,providerId).orElse(null);
+        User user = userRepository.findByProviderIdAndProviderType(providerId,authProviderType).orElse(null);
 
         String email = oAuth2User.getAttribute("email");
         User emailUser = userRepository.findByUsername(email).orElse(null);
 
         if(user == null && emailUser == null){ //agar user nahi hai toh create karega
             String username = determineUserNameFromOAuthUser(oAuth2User,registrationId,providerId);
-           SignUpResponseDto signUpResponseDto = signup(new SignUpRequestDto(username,null));
+           user = signUpInternal(new SignUpRequestDto(username,null),authProviderType,providerId);
 
         } else if (user != null) {
             if ((email !=null && !email.isBlank() && !email.equals(user.getUsername()))){
@@ -84,8 +91,8 @@ public class AuthService {
         else {
             throw new BadCredentialsException("This email already registered with provider " + email);
         }
-        LoginResponseDto loginResponseDto = new LoginResponseDto(jwtUtil.generateAccessToken(), );
-
+        LoginResponseDto loginResponseDto = new LoginResponseDto(jwtUtil.generateAccessToken(user), user.getId());
+        return  ResponseEntity.ok(loginResponseDto);
 //        and if the user have an account:directly login
 //                otherwise create an account and then login
     }
