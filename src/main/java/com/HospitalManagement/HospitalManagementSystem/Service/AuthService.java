@@ -48,7 +48,7 @@ public class AuthService {
     public User signUpInternal(SignUpRequestDto signUpRequestDto,AuthProviderType authProviderType ,String providerId){
         User user = userRepository.findByUsername(signUpRequestDto.getUsername()).orElse(null);
         if(user != null){
-            throw new IllegalArgumentException("User already exists");
+            throw new IllegalArgumentException("User already exists ");
         }
         user =User.builder()
                 .username(signUpRequestDto.getUsername())
