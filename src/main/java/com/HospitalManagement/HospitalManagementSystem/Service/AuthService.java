@@ -2,6 +2,7 @@ package com.HospitalManagement.HospitalManagementSystem.Service;
 
 import com.HospitalManagement.HospitalManagementSystem.Entity.Type.AuthProviderType;
 import com.HospitalManagement.HospitalManagementSystem.Entity.User;
+import com.HospitalManagement.HospitalManagementSystem.OAuth.OAuthService;
 import com.HospitalManagement.HospitalManagementSystem.Repository.UserRepository;
 import com.HospitalManagement.HospitalManagementSystem.Security.JwtUtil;
 import com.HospitalManagement.HospitalManagementSystem.dto.LoginRequestDto;
@@ -26,7 +27,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-
+    private final OAuthService oAuthService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
@@ -69,15 +70,15 @@ public class AuthService {
     public ResponseEntity<LoginResponseDto> handleOAuth2LoginSucess(OAuth2User oAuth2User, String registrationId) {
 
 //     first get the providerID and the ProviderType and then save the providerType and providerId in the user table
-        AuthProviderType authProviderType = getAuthProviderType(registrationId);
-        String providerId = getProviderIdFromOAuthUser(oAuth2User,registrationId);
+        AuthProviderType authProviderType = oAuthService.getAuthProviderType(registrationId);
+        String providerId = oAuthService.getProviderIdFromOAuthUser(oAuth2User,registrationId);
         User user = userRepository.findByProviderIdAndProviderType(providerId,authProviderType).orElse(null);
 
         String email = oAuth2User.getAttribute("email");
         User emailUser = userRepository.findByUsername(email).orElse(null);
 
         if(user == null && emailUser == null){ //agar user nahi hai toh create karega
-            String username = determineUserNameFromOAuthUser(oAuth2User,registrationId,providerId);
+            String username = oAuthService.determineUserNameFromOAuthUser(oAuth2User, registrationId, providerId);
            user = signUpInternal(new SignUpRequestDto(username,null),authProviderType,providerId);
 
         } else if (user != null) {
@@ -96,43 +97,6 @@ public class AuthService {
 //                otherwise create an account and then login
     }
 
-    public AuthProviderType getAuthProviderType(String registrationId){
-        return switch (registrationId.toLowerCase()){
-            case "google" ->AuthProviderType.GOOGLE;
-            case "github" ->AuthProviderType.GITHUB;
-            case "facebook" ->AuthProviderType.FACEBOOK;
-            case "twitter" ->AuthProviderType.TWITTER;
-            default -> throw  new IllegalArgumentException("Invalid registration id");
-        };
-    }
 
-    public String getProviderIdFromOAuthUser(OAuth2User oAuth2User,String registrationId){
-        String providerId = switch (registrationId.toLowerCase()){
-            case "google" ->oAuth2User.getAttribute("sub");
-            case "github" ->oAuth2User.getAttribute("id");
-            default -> {
-                log.error("Unsupported oAuth2 provider:{}",registrationId);
-                throw new IllegalArgumentException("Invalid registration id");
-            }
-
-        };
-        if(providerId==null || providerId.isBlank()){
-            log.error("Unable to determine providerId for provider:{}",registrationId);
-            throw new IllegalArgumentException("Unable to determine providerId for OAuth2 Login");
-        }
-        return providerId;
-    }
-
-    public String determineUserNameFromOAuthUser(OAuth2User oAuth2User,String registrationId,String providerId){
-        String email = oAuth2User.getAttribute("email");
-       if(email !=null && !email.isBlank()){
-           return email;
-       }
-       return switch (registrationId.toLowerCase()) {
-           case "google" ->oAuth2User.getAttribute("sub");
-           case  "github" ->oAuth2User.getAttribute("login");
-           default -> providerId;
-       };
-    }
 }
 
