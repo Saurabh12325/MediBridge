@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final AuthenticationManager  authenticationManager;
+    private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -53,12 +53,11 @@ public class AuthService {
                 .username(signUpRequestDto.getUsername())
                 .providerType(authProviderType)
                 .providerId(providerId)
-//                )
                 .build());
-        if(authProviderType==AuthProviderType.EMAIL){
+        if(authProviderType == AuthProviderType.EMAIL){
             user.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
         }
-        return user;
+        return userRepository.save(user);
     }
     public SignUpResponseDto signup(SignUpRequestDto signupRequestDto) {
         User user = signUpInternal(signupRequestDto,AuthProviderType.EMAIL,null);
