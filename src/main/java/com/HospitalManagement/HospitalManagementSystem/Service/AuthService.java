@@ -79,6 +79,8 @@ public class AuthService {
         else {
             throw new BadCredentialsException("This email already registered with provider " + email);
         }
+        LoginResponseDto loginResponseDto = new LoginResponseDto(jwtUtil.generateAccessToken(), );
+
 //        and if the user have an account:directly login
 //                otherwise create an account and then login
     }
