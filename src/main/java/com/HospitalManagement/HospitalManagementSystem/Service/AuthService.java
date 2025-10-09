@@ -41,19 +41,24 @@ public class AuthService {
         String accessToken = jwtUtil.generateAccessToken(user);
         return new LoginResponseDto(accessToken, user.getId());
     }
-
-    public SignUpResponseDto signup(SignUpRequestDto signupRequestDto) {
-        User user = userRepository.findByUsername(signupRequestDto.getUsername()).orElse(null);
+    public User signUpInternal(SignUpRequestDto signUpRequestDto){
+        User user = userRepository.findByUsername(signUpRequestDto.getUsername()).orElse(null);
         if(user != null){
             throw new IllegalArgumentException("User already exists");
         }
         user = userRepository.save(User.builder()
-                .username(signupRequestDto.getUsername())
-                .password(passwordEncoder.encode(signupRequestDto.getPassword()))
+                .username(signUpRequestDto.getUsername())
+                .password(passwordEncoder.encode(signUpRequestDto.getPassword()))
                 .build());
+        return user;
+    }
+    public SignUpResponseDto signup(SignUpRequestDto signupRequestDto) {
 
+        User user = signUpInternal(signupRequestDto);
         return new SignUpResponseDto(user.getId(), user.getUsername());
     }
+
+
 
     public ResponseEntity<LoginResponseDto> handleOAuth2LoginSucess(OAuth2User oAuth2User, String registrationId) {
 
