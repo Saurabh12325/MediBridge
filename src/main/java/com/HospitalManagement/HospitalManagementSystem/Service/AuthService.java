@@ -49,11 +49,11 @@ public class AuthService {
         if(user != null){
             throw new IllegalArgumentException("User already exists");
         }
-        user = userRepository.save(User.builder()
+        user =User.builder()
                 .username(signUpRequestDto.getUsername())
                 .providerType(authProviderType)
                 .providerId(providerId)
-                .build());
+                .build();
         if(authProviderType == AuthProviderType.EMAIL){
             user.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
         }
