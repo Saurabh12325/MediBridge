@@ -1,6 +1,7 @@
 package com.HospitalManagement.HospitalManagementSystem.Service;
 
 import com.HospitalManagement.HospitalManagementSystem.Entity.Type.AuthProviderType;
+import com.HospitalManagement.HospitalManagementSystem.Entity.Type.RoleType;
 import com.HospitalManagement.HospitalManagementSystem.Entity.User;
 import com.HospitalManagement.HospitalManagementSystem.OAuth.OAuthService;
 import com.HospitalManagement.HospitalManagementSystem.Repository.UserRepository;
@@ -21,6 +22,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 
 @Slf4j
@@ -54,6 +57,7 @@ public class AuthService {
                 .username(signUpRequestDto.getUsername())
                 .providerType(authProviderType)
                 .providerId(providerId)
+                .roles(Set.of(RoleType.PATIENT))
                 .build();
         if(authProviderType == AuthProviderType.EMAIL){
             user.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));

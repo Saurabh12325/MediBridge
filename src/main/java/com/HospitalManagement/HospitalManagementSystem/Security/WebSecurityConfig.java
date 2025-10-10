@@ -41,7 +41,7 @@ public class WebSecurityConfig{
                  .oauth2Login(oauth2 -> oauth2
                          .failureHandler( (request, response, exception) ->
                                  log.error("aAuthError : {}", exception.getMessage())
-                 )
+                         )
                  .successHandler(oAuth2SuccessHandler)
 
                  );

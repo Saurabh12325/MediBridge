@@ -35,12 +35,16 @@ import java.util.List;
     @Column(updatable = false,nullable = false)
     private LocalDateTime createdAt;
 
-
    @OneToOne(cascade = {CascadeType.ALL} ,orphanRemoval = true)
    @JoinColumn(name = "Patient_Insurance_id") //this is owning side
     private Insurance insurance;
 
    @OneToMany(mappedBy = "patient")
    private List<Appointment> appointments = new ArrayList<>();
+
+
+   @OneToOne
+   @MapsId
+   private User user;
 
 }

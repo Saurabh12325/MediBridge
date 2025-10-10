@@ -33,7 +33,14 @@ public class User implements UserDetails {
 
     private String password;
     private String providerId;
+
+    @Enumerated(EnumType.STRING)
     private AuthProviderType providerType;
+
+    @ElementCollection(fetch = FetchType.EAGER)  //this annotation helpful for the creating of the new table for the roles
+    @Enumerated(EnumType.STRING)
+    Set<RoleType> roles =  new HashSet<>();
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
