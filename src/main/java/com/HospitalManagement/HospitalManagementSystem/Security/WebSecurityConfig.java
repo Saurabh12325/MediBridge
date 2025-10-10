@@ -1,5 +1,6 @@
 package com.HospitalManagement.HospitalManagementSystem.Security;
 
+import com.HospitalManagement.HospitalManagementSystem.Entity.Type.RoleType.*;
 import com.HospitalManagement.HospitalManagementSystem.OAuth.OAuth2SuccessHandler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 
+import static com.HospitalManagement.HospitalManagementSystem.Entity.Type.RoleType.*;
+
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
@@ -36,7 +39,10 @@ public class WebSecurityConfig{
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->auth
                                 .requestMatchers("/public/**","/auth/**").permitAll()
-                                .anyRequest().authenticated())
+                        .requestMatchers("/doctor/**").hasAnyRole(DOCTOR.name(),ADMIN.name())
+                        .requestMatchers("/admin/**").hasRole(ADMIN.name())
+                        .anyRequest().authenticated()
+                )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                  .oauth2Login(oauth2 -> oauth2
                          .failureHandler( (request, response, exception) ->
