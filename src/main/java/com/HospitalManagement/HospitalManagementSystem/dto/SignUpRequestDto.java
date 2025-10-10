@@ -15,7 +15,7 @@ import java.util.Set;
 public class SignUpRequestDto {
     private String username;
     private String password;
-//    private String name;
-//
-//    private Set<RoleType> roles = new HashSet<>();
+  private String name;
+
+    private Set<RoleType> roles = new HashSet<>();
 }

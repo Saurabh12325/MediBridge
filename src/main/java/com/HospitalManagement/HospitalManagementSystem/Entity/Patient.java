@@ -1,9 +1,7 @@
 package com.HospitalManagement.HospitalManagementSystem.Entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.engine.internal.Cascade;
 
@@ -11,15 +9,21 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Data
+@Getter
+@Setter
 @ToString
 @Table(name = "patient_tbl")
  public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @OneToOne
+    @MapsId
+    private User user;
     @Column(nullable = false,length = 40)
     private String name;
 
@@ -43,8 +47,6 @@ import java.util.List;
    private List<Appointment> appointments = new ArrayList<>();
 
 
-   @OneToOne
-   @MapsId
-   private User user;
+
 
 }

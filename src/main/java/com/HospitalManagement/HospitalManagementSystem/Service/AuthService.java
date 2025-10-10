@@ -1,9 +1,11 @@
 package com.HospitalManagement.HospitalManagementSystem.Service;
 
+import com.HospitalManagement.HospitalManagementSystem.Entity.Patient;
 import com.HospitalManagement.HospitalManagementSystem.Entity.Type.AuthProviderType;
 import com.HospitalManagement.HospitalManagementSystem.Entity.Type.RoleType;
 import com.HospitalManagement.HospitalManagementSystem.Entity.User;
 import com.HospitalManagement.HospitalManagementSystem.OAuth.OAuthService;
+import com.HospitalManagement.HospitalManagementSystem.Repository.PatientRepository;
 import com.HospitalManagement.HospitalManagementSystem.Repository.UserRepository;
 import com.HospitalManagement.HospitalManagementSystem.Security.JwtUtil;
 import com.HospitalManagement.HospitalManagementSystem.dto.LoginRequestDto;
@@ -35,6 +37,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PatientRepository patientRepository;
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         Authentication authentication = authenticationManager.authenticate(
@@ -57,12 +60,26 @@ public class AuthService {
                 .username(signUpRequestDto.getUsername())
                 .providerType(authProviderType)
                 .providerId(providerId)
-                .roles(Set.of(RoleType.PATIENT))
+                .roles(signUpRequestDto.getRoles())
                 .build();
+
+
+
         if(authProviderType == AuthProviderType.EMAIL){
             user.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
         }
-        return userRepository.save(user);
+        user = userRepository.save(user);
+
+        Patient patient = Patient.builder()
+                .name(signUpRequestDto.getName())
+                .email(signUpRequestDto.getUsername())
+                .user(user)
+                .build();
+        patientRepository.save(patient);
+        patient.setUser(user);
+
+
+        return user;
     }
     public SignUpResponseDto signup(SignUpRequestDto signupRequestDto) {
         User user = signUpInternal(signupRequestDto,AuthProviderType.EMAIL,null);
@@ -79,11 +96,12 @@ public class AuthService {
         User user = userRepository.findByProviderIdAndProviderType(providerId,authProviderType).orElse(null);
 
         String email = oAuth2User.getAttribute("email");
+        String name = oAuth2User.getAttribute("name");
         User emailUser = userRepository.findByUsername(email).orElse(null);
 
         if(user == null && emailUser == null){ //agar user nahi hai toh create karega
             String username = oAuthService.determineUserNameFromOAuthUser(oAuth2User, registrationId, providerId);
-           user = signUpInternal(new SignUpRequestDto(username,null),authProviderType,providerId);
+           user = signUpInternal(new SignUpRequestDto(username,null,name,Set.of(RoleType.PATIENT)),authProviderType,providerId);
 
         } else if (user != null) {
             if ((email !=null && !email.isBlank() && !email.equals(user.getUsername()))){

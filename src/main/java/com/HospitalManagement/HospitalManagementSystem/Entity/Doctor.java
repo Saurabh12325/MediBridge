@@ -30,7 +30,7 @@ public class Doctor {
     private String name;
     @Column(nullable = false,length = 100,unique = true)
     private String email;
-     @Column(length = 100)
+    @Column(length = 100)
     private String Specialization;
     @ManyToMany(mappedBy = "doctors")
     private Set<Department> departments = new HashSet<>();

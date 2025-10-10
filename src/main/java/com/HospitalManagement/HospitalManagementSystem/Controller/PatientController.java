@@ -1,5 +1,6 @@
 package com.HospitalManagement.HospitalManagementSystem.Controller;
 
+import com.HospitalManagement.HospitalManagementSystem.Entity.User;
 import com.HospitalManagement.HospitalManagementSystem.Service.AppointmentService;
 import com.HospitalManagement.HospitalManagementSystem.Service.PatientService;
 import com.HospitalManagement.HospitalManagementSystem.dto.AppointmentResponseDto;
@@ -8,6 +9,7 @@ import com.HospitalManagement.HospitalManagementSystem.dto.PatientResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,7 +27,9 @@ public class PatientController {
 
     @GetMapping("/profile")
     private ResponseEntity<PatientResponseDto> getPatientProfile() {
-        Long patientId = 1L;
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long patientId = user.getId();
         return ResponseEntity.ok(patientService.getPatientById(patientId));
     }
 
