@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminController {
     private final DoctorService doctorService;
+
     @PostMapping("/onBoardNewDoctor")
     public ResponseEntity<DoctorResponseDto> onBoardNewDoctor(@RequestBody OnBoardDoctorRequestDto onboardDoctorRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(doctorService.onBoardNewDoctor(onboardDoctorRequestDto));
