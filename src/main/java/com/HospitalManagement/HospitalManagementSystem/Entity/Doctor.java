@@ -28,7 +28,7 @@ public class Doctor {
 
     @Column(nullable = false,length = 100)
     private String name;
-    @Column(nullable = false,length = 100,unique = true)
+    @Column(length = 100,unique = true)
     private String email;
     @Column(length = 100)
     private String Specialization;
