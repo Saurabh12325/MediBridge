@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,6 +24,8 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
+import static com.HospitalManagement.HospitalManagementSystem.Entity.Type.PermissionType.APPOINTMENT_DELETE;
+import static com.HospitalManagement.HospitalManagementSystem.Entity.Type.PermissionType.USER_MANAGE;
 import static com.HospitalManagement.HospitalManagementSystem.Entity.Type.RoleType.*;
 
 @Configuration
@@ -41,6 +44,9 @@ public class WebSecurityConfig{
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->auth
                                 .requestMatchers("/public/**","/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/admin/**")
+                        .hasAnyAuthority(APPOINTMENT_DELETE.name(),
+                                USER_MANAGE.name())
                         .requestMatchers("/doctor/**").hasAnyRole(DOCTOR.name(),ADMIN.name())
                         .requestMatchers("/admin/**").hasRole(ADMIN.name())
                         .anyRequest().authenticated()

@@ -1,6 +1,7 @@
 package com.HospitalManagement.HospitalManagementSystem.Entity;
 import com.HospitalManagement.HospitalManagementSystem.Entity.Type.AuthProviderType;
 import com.HospitalManagement.HospitalManagementSystem.Entity.Type.RoleType;
+import com.HospitalManagement.HospitalManagementSystem.Security.RolePermissionMapping;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 })
 
 public class User implements UserDetails {
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
